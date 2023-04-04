@@ -15,10 +15,10 @@ class Player extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'         => $this->id,
-            'name'       => $this->name,
-            'answers'    => (int) $this->answers,
-            'points'     => (int) $this->points,
+            'id' => $this->id,
+            'name' => $this->name,
+            'answers' => (int) $this->answers,
+            'points' => (int) $this->points,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

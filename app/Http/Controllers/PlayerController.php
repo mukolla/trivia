@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Player;
 use App\Http\Resources\Player as PlayerResource;
 use App\Http\Resources\PlayerCollection;
+use App\Models\Player;
+use Illuminate\Http\Request;
 
 class PlayerController extends Controller
 {
@@ -36,7 +36,7 @@ class PlayerController extends Controller
     {
         $request->merge(['correct' => (bool) json_decode($request->get('correct'))]);
         $request->validate([
-            'correct' => 'required|boolean'
+            'correct' => 'required|boolean',
         ]);
 
         $player = Player::findOrFail($id);
