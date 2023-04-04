@@ -1,0 +1,71 @@
+version: '3'
+services:
+
+  #PHP Service
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: 'trivia_api_app'
+    tty: true
+    environment:
+      SERVICE_NAME: app
+      SERVICE_TAGS: dev
+    working_dir: '/var/www'
+    volumes:
+      - apphtml:/var/share/html/public
+    networks:
+      - app-network
+
+  #Nginx Service
+  webserver:
+    image: nginx:alpine
+    container_name: 'trivia_api_webserver'
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - apphtml:/var/www/public
+      - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
+    networks:
+      - app-network
+
+  db:
+      image: mysql:8.0.1
+      container_name: 'trivia_api_db'
+      restart: unless-stopped
+      tty: true
+      ports:
+          - "3306:3306"
+      environment:
+          MYSQL_DATABASE: 'trivia_db'
+          MYSQL_ROOT_PASSWORD: 123123
+          SERVICE_TAGS: dev
+          SERVICE_NAME: mysql
+      networks:
+          - app-network
+
+  adminer:
+      image: adminer
+      container_name: 'trivia_api_adminer'
+      restart: unless-stopped
+      tty: true
+      ports:
+          - "8080:8080"
+      networks:
+          - app-network
+
+#Docker Networks
+networks:
+  app-network:
+    driver: bridge
+
+#Volumes
+volumes:
+  apphtml:
+      driver: local
+  dbdata:
+    driver: local
+

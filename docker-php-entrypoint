@@ -1,0 +1,19 @@
+#!/bin/bash
+
+set -e
+
+# Set working directory
+cd /var/www
+
+mkdir -p /var/share/html/public
+rm -rf /var/share/html/public/*
+cp -r /var/www/public/* /var/share/html/public
+chown www:www /var/share/html/public
+
+# Copy environment file
+cp /var/www/.env.example /var/www/.env
+
+# Generate app key
+php artisan key:generate
+
+exec "$@"
