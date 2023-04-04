@@ -21,6 +21,7 @@ class PlayerController extends Controller
      *     summary="Get all players",
      *     description="Retrieve a list of all players",
      *     tags={"Players"},
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation"
