@@ -48,6 +48,8 @@ services:
           MYSQL_ROOT_PASSWORD: 123123
           SERVICE_TAGS: dev
           SERVICE_NAME: mysql
+      volumes:
+          - dbdata:/var/lib/mysql/
       networks:
           - app-network
 
