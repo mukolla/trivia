@@ -13,7 +13,9 @@ services:
       SERVICE_TAGS: dev
     working_dir: '/var/www'
     volumes:
-      - apphtml:/var/share/html/public
+      #production or released
+      #- apphtml:/var/share/html/public
+      - ./:/var/www
     networks:
       - app-network
 
@@ -27,7 +29,9 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - apphtml:/var/www/public
+      - ./:/var/www
+      #production or released
+      #- apphtml:/var/www/public
       - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
     networks:
       - app-network
