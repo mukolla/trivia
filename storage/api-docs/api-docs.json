@@ -1,0 +1,153 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "My First API",
+        "version": "0.1"
+    },
+    "paths": {
+        "/api/players": {
+            "get": {
+                "tags": [
+                    "Players"
+                ],
+                "summary": "Get all players",
+                "description": "Retrieve a list of all players",
+                "operationId": "a355f9879160729f824bdea53e739b05",
+                "responses": {
+                    "200": {
+                        "description": "Players list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Player"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Players"
+                ],
+                "summary": "Create a new player",
+                "description": "Create a new player with name, answers, and points",
+                "operationId": "4e2752a0305de0adfa2a8c9ac1aa37a9",
+                "requestBody": {
+                    "description": "Data of a new player",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "description": "Player name",
+                                        "type": "string",
+                                        "example": "John"
+                                    },
+                                    "answers": {
+                                        "description": "Number of correct answers",
+                                        "type": "integer",
+                                        "example": "10"
+                                    },
+                                    "points": {
+                                        "description": "Number of points earned",
+                                        "type": "integer",
+                                        "example": "100"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful creation of a new player",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Player"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Invalid request data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "description": "Error message",
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "description": "Object with errors for each invalid field",
+                                            "type": "object",
+                                            "example": {
+                                                "name": [
+                                                    "The name field is required."
+                                                ],
+                                                "points": [
+                                                    "The points must be an integer."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Player": {
+                "title": "Player",
+                "description": "A player object",
+                "required": [
+                    "id",
+                    "name",
+                    "answers",
+                    "points"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "The user's ID",
+                        "type": "integer"
+                    },
+                    "name": {
+                        "description": "The user's name",
+                        "type": "string",
+                        "example": "John"
+                    },
+                    "answers": {
+                        "description": "Desc. answers",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "points": {
+                        "description": "Desc. points",
+                        "type": "integer",
+                        "example": 1
+                    }
+                },
+                "type": "object"
+            }
+        }
+    }
+}

@@ -20,3 +20,9 @@ Check app DB connection
 
 1. Go to app folder. (as example: cd /home/mukolla/trivia)
 2. docker run --rm -v $(pwd):/app composer require darkaonline/l5-swagger
+
+**Update API Documentation with OpenAPI/Swagger**
+
+1. docker exec -it trivia_api_app bash
+2. php artisan l5-swagger:generate
+    

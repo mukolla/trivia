@@ -23,9 +23,13 @@ class PlayerController extends Controller
      *     tags={"Players"},
      *
      *     @OA\Response(
-     *         response=200,
-     *         description="Successful operation"
-     *     ),
+     *          response=200,
+     *          description="Players list",
+     *     @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Player")
+     *         ),
+     *      ),
      *     @OA\Response(
      *         response=401,
      *         description="Unauthorized"
@@ -42,6 +46,66 @@ class PlayerController extends Controller
         return new PlayerResource(Player::findOrFail($id));
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/players",
+     *     summary="Create a new player",
+     *     description="Create a new player with name, answers, and points",
+     *     tags={"Players"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Data of a new player",
+     *         @OA\JsonContent(
+     *             required={"name"},
+     *             @OA\Property(
+     *                 property="name",
+     *                 type="string",
+     *                 description="Player name",
+     *                 example="John"
+     *             ),
+     *             @OA\Property(
+     *                 property="answers",
+     *                 type="integer",
+     *                 description="Number of correct answers",
+     *                 example="10"
+     *             ),
+     *             @OA\Property(
+     *                 property="points",
+     *                 type="integer",
+     *                 description="Number of points earned",
+     *                 example="100"
+     *             ),
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Successful creation of a new player",
+     *         @OA\JsonContent(ref="#/components/schemas/Player")
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Invalid request data",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 description="Error message",
+     *                 example="The given data was invalid."
+     *             ),
+     *             @OA\Property(
+     *                 property="errors",
+     *                 type="object",
+     *                 description="Object with errors for each invalid field",
+     *                 example={
+     *                     "name": {"The name field is required."},
+     *                     "points": {"The points must be an integer."}
+     *                 }
+     *             ),
+     *         ),
+     *     ),
+     * )
+     *
+     */
     public function store(Request $request)
     {
         $request->validate([
