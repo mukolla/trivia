@@ -5,12 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-
 /**
  * @OA\Schema(
  *     schema="Player",
  *     title="Player",
  *     description="A player object",
+ *
  *     @OA\Property(
  *         property="id",
  *         type="integer",

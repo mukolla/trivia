@@ -25,11 +25,14 @@ class PlayerController extends Controller
      *     @OA\Response(
      *          response=200,
      *          description="Players list",
+     *
      *     @OA\JsonContent(
      *             type="array",
+     *
      *             @OA\Items(ref="#/components/schemas/Player")
      *         ),
      *      ),
+     *
      *     @OA\Response(
      *         response=401,
      *         description="Unauthorized"
@@ -52,11 +55,14 @@ class PlayerController extends Controller
      *     summary="Create a new player",
      *     description="Create a new player with name, answers, and points",
      *     tags={"Players"},
+     *
      *     @OA\RequestBody(
      *         required=true,
      *         description="Data of a new player",
+     *
      *         @OA\JsonContent(
      *             required={"name"},
+     *
      *             @OA\Property(
      *                 property="name",
      *                 type="string",
@@ -77,15 +83,20 @@ class PlayerController extends Controller
      *             ),
      *         ),
      *     ),
+     *
      *     @OA\Response(
      *         response=201,
      *         description="Successful creation of a new player",
+     *
      *         @OA\JsonContent(ref="#/components/schemas/Player")
      *     ),
+     *
      *     @OA\Response(
      *         response=422,
      *         description="Invalid request data",
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(
      *                 property="message",
      *                 type="string",
@@ -104,7 +115,6 @@ class PlayerController extends Controller
      *         ),
      *     ),
      * )
-     *
      */
     public function store(Request $request)
     {
