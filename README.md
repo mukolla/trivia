@@ -26,3 +26,6 @@ Check app DB connection
 1. docker exec -it trivia_api_app bash
 2. php artisan l5-swagger:generate
     
+
+**Command List**
+- php artisan make:middleware JsonMiddleware

@@ -19,9 +19,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/players', [PlayerController::class, 'index']);
-Route::get('/players/{id}', [PlayerController::class, 'show']);
-Route::post('/players', [PlayerController::class, 'store']);
-Route::post('/players/{id}/answers', [PlayerController::class, 'answer']);
-Route::delete('/players/{id}', [PlayerController::class, 'delete']);
-Route::delete('/players/{id}/answers', [PlayerController::class, 'resetAnswers']);
+Route::middleware('json')->group(function () {
+    Route::get('/players', [PlayerController::class, 'index']);
+    Route::get('/players/{id}', [PlayerController::class, 'show']);
+    Route::post('/players', [PlayerController::class, 'store']);
+    Route::post('/players/{id}/answers', [PlayerController::class, 'answer']);
+    Route::delete('/players/{id}', [PlayerController::class, 'delete']);
+    Route::delete('/players/{id}/answers', [PlayerController::class, 'resetAnswers']);
+});

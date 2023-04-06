@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreatePlayerRequest;
 use App\Http\Resources\Player as PlayerResource;
 use App\Http\Resources\PlayerCollection;
 use App\Models\Player;
@@ -27,9 +28,9 @@ class PlayerController extends Controller
      *          description="Players list",
      *
      *     @OA\JsonContent(
-     *             type="array",
+     *             type="object",
      *
-     *             @OA\Items(ref="#/components/schemas/Player")
+     *             @OA\Property(property="data", type="array", @OA\Items(ref="#/components/schemas/Player")),
      *         ),
      *      ),
      *
@@ -44,6 +45,46 @@ class PlayerController extends Controller
         return new PlayerCollection(Player::all());
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/players/{id}",
+     *     summary="Get a single player",
+     *     description="Returns a single player by ID",
+     *     operationId="getPlayerById",
+     *     tags={"Players"},
+     *
+     *     @OA\Parameter(
+     *         name="id",
+     *         description="ID of the player to return",
+     *         required=true,
+     *         in="path",
+     *
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *
+     *         @OA\JsonContent(
+     *
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 ref="#/components/schemas/Player"
+     *             )
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=404,
+     *         description="Player not found"
+     *     )
+     * )
+     */
     public function show($id)
     {
         return new PlayerResource(Player::findOrFail($id));
@@ -88,7 +129,12 @@ class PlayerController extends Controller
      *         response=201,
      *         description="Successful creation of a new player",
      *
-     *         @OA\JsonContent(ref="#/components/schemas/Player")
+     *         @OA\JsonContent(
+     *
+     *             @OA\Property(property="data", type="object", properties={
+     *             @OA\Property(property="player", ref="#/components/schemas/Player")
+     *         })
+     *        ),
      *     ),
      *
      *     @OA\Response(
@@ -116,12 +162,8 @@ class PlayerController extends Controller
      *     ),
      * )
      */
-    public function store(Request $request)
+    public function store(CreatePlayerRequest $request)
     {
-        $request->validate([
-            'name' => 'required|max:255',
-        ]);
-
         $player = Player::create($request->all());
 
         return (new PlayerResource($player))
@@ -146,6 +188,46 @@ class PlayerController extends Controller
         return new PlayerResource($player);
     }
 
+    /**
+     * @OA\Delete(
+     *     path="/players/{id}",
+     *     summary="Delete player by ID",
+     *     description="Delete a player record by its ID",
+     *     operationId="deletePlayerById",
+     *     tags={"Players"},
+     *
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="The ID of the player",
+     *         required=true,
+     *
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=204,
+     *         description="Player record deleted successfully"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Player not found",
+     *
+     *         @OA\JsonContent(
+     *             type="object",
+     *
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Player not found"
+     *             )
+     *         )
+     *     )
+     * )
+     */
     public function delete($id)
     {
         $player = Player::findOrFail($id);
@@ -154,6 +236,48 @@ class PlayerController extends Controller
         return response()->json(null, 204);
     }
 
+    /**
+     * @OA\Delete(
+     *     path="/api/players/{id}/answers",
+     *     summary="Reset a player's answers",
+     *     description="Reset the number of answers of a player to 0",
+     *     operationId="resetAnswers",
+     *     tags={"Players"},
+     *
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="The ID of the player",
+     *         required=true,
+     *
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful reset of player's answers",
+     *
+     *         @OA\JsonContent(
+     *             type="object",
+     *
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *
+     *                 @OA\Items(ref="#/components/schemas/Player")
+     *             )
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=404,
+     *         description="Player not found"
+     *     )
+     * )
+     */
     public function resetAnswers($id)
     {
         $player = Player::findOrFail($id);
