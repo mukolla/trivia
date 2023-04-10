@@ -171,6 +171,74 @@ class PlayerController extends Controller
             ->setStatusCode(201);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/players/{id}/answer",
+     *     summary="Submit an answer for a player",
+     *     description="Submit a player's answer and calculate the points earned based on whether it was correct or not.",
+     *     operationId="answer",
+     *     tags={"Players"},
+     *
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="The ID of the player",
+     *         required=true,
+     *
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="The request body contains the player's answer.",
+     *
+     *         @OA\JsonContent(
+     *             required={"correct"},
+     *
+     *             @OA\Property(
+     *                 property="correct",
+     *                 type="boolean",
+     *                 description="Whether the player's answer was correct or not.",
+     *                 example=true
+     *             )
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success",
+     *
+     *         @OA\JsonContent(
+     *             type="object",
+     *
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *
+     *                 @OA\Items(ref="#/components/schemas/Player")
+     *             )
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=404,
+     *         description="Player not found",
+     *
+     *         @OA\JsonContent(
+     *             type="object",
+     *
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Player not found."
+     *             )
+     *         )
+     *     )
+     * )
+     */
     public function answer($id, Request $request)
     {
         $request->merge(['correct' => (bool) json_decode($request->get('correct'))]);
