@@ -1,8 +1,12 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "My First API",
-        "version": "0.1"
+        "title": "Simple API application for experiment with PHP and Laravel",
+        "description": "\n *     Materials:\n *     - https://developer.okta.com/blog/2018/10/23/php-laravel-angular-crud-app#why-use-okta-for-authentication\n *     - https://ivankolodiy.medium.com/how-to-write-swagger-documentation-for-laravel-api-tips-examples-5510fb392a94\n *     - https://ikolodiy.com/posts/laravel-swagger-tips-examples\n *     - https://www.digitalocean.com/community/tutorials/how-to-set-up-laravel-nginx-and-mysql-with-docker-compose\n *     ",
+        "contact": {
+            "email": "mukolla@gmail.com"
+        },
+        "version": "1.0.0"
     },
     "paths": {
         "/api/players": {

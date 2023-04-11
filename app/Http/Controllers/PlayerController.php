@@ -8,12 +8,6 @@ use App\Http\Resources\PlayerCollection;
 use App\Models\Player;
 use Illuminate\Http\Request;
 
-/**
- * @OA\Info(
- *     title="My First API",
- *     version="0.1"
- * )
- */
 class PlayerController extends Controller
 {
     /**
