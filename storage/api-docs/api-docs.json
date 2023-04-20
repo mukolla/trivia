@@ -2,13 +2,89 @@
     "openapi": "3.0.0",
     "info": {
         "title": "Simple API application for experiment with PHP and Laravel",
-        "description": "\n *     Materials:\n *     - https://developer.okta.com/blog/2018/10/23/php-laravel-angular-crud-app#why-use-okta-for-authentication\n *     - https://ivankolodiy.medium.com/how-to-write-swagger-documentation-for-laravel-api-tips-examples-5510fb392a94\n *     - https://ikolodiy.com/posts/laravel-swagger-tips-examples\n *     - https://www.digitalocean.com/community/tutorials/how-to-set-up-laravel-nginx-and-mysql-with-docker-compose\n *     ",
+        "description": "\n *     Materials:\n *     - https://developer.okta.com/blog/2018/10/23/php-laravel-angular-crud-app#why-use-okta-for-authentication\n *     - https://ivankolodiy.medium.com/how-to-write-swagger-documentation-for-laravel-api-tips-examples-5510fb392a94\n *     - https://ikolodiy.com/posts/laravel-swagger-tips-examples\n *     - https://www.digitalocean.com/community/tutorials/how-to-set-up-laravel-nginx-and-mysql-with-docker-compose\n *     - https://techsolutionstuff.com/post/laravel-8-socialite-login-with-google-account\n *     - https://codyrigg.medium.com/how-to-add-a-google-login-using-socialite-on-laravel-8-with-jetstream-6153581e7dc9\n *     - https://blog.ithillel.ua/articles/oauth-2-0-autentifikaciya-cerez-google-yak-realizuvati-vxid-cerez-google-na-saiti\n *     - https://laravel.su/docs/8.x/authentication#starter-kits\n *     - https://laravel.su/docs/8.x/authorization\n *     ",
         "contact": {
             "email": "mukolla@gmail.com"
         },
         "version": "1.0.0"
     },
     "paths": {
+        "/api/auth/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "User login",
+                "operationId": "8dcb70df1020986038d098cc08d05dae",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "description": "User email",
+                                        "type": "string",
+                                        "example": "user@example.com"
+                                    },
+                                    "password": {
+                                        "description": "User password",
+                                        "type": "string",
+                                        "example": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful login",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "access_token": {
+                                            "description": "JWT access token",
+                                            "type": "string",
+                                            "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImlzcyI6Imh0dHA6L2xvY2FsaG9zdDo4MDAwL2FwaS9sb2dpbiIsImlhdCI6MTYzMjI0MTU5NCwiZXhwIjoxNjMyMjQ1MTk0LCJuYmYiOjE2MzIyNDE1OTQsImp0aSI6ImhTR1kwZk1KNUVyTGFyX2sifQ.uUEy3Sbp8SvJU6yC8zGckUOvbeVOG0IUPxHp3eW3f0g"
+                                        },
+                                        "token_type": {
+                                            "description": "Type of the token",
+                                            "type": "string",
+                                            "example": "bearer"
+                                        },
+                                        "expires_in": {
+                                            "description": "Token expiration time in seconds",
+                                            "type": "integer",
+                                            "example": "3600"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "Error message",
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/players": {
             "get": {
                 "tags": [
@@ -337,6 +413,99 @@
                     },
                     "404": {
                         "description": "Player not found"
+                    }
+                }
+            }
+        },
+        "/api/user/register": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Register a new user",
+                "operationId": "d03ee3a44bdd6f0025efd14c5c76b5ae",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "Name of the user",
+                                        "type": "string",
+                                        "maxLength": 255
+                                    },
+                                    "email": {
+                                        "description": "Email of the user",
+                                        "type": "string",
+                                        "format": "email",
+                                        "maxLength": 255
+                                    },
+                                    "password": {
+                                        "description": "Password of the user",
+                                        "type": "string",
+                                        "minLength": 8
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successfully registered user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "description": "ID of the registered user",
+                                            "type": "integer"
+                                        },
+                                        "name": {
+                                            "description": "Name of the registered user",
+                                            "type": "string"
+                                        },
+                                        "email": {
+                                            "description": "Email of the registered user",
+                                            "type": "string",
+                                            "format": "email"
+                                        },
+                                        "message": {
+                                            "description": "Success message",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "additionalProperties": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
