@@ -127,6 +127,27 @@ class AuthController extends Controller
     /**
      * Log the user out (Invalidate the token).
      *
+     * @OA\Post(
+     *     path="/api/auth/logout",
+     *     summary="User logout",
+     *     tags={"Authentication"},
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful logout",
+     *
+     *         @OA\JsonContent(
+     *
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 description="Logout success message",
+     *                 example="Successfully logged out"
+     *             ),
+     *         ),
+     *     ),
+     * )
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function logout()
@@ -138,6 +159,39 @@ class AuthController extends Controller
 
     /**
      * Refresh a token.
+     *
+     * @OA\Post(
+     *     path="/api/auth/refresh",
+     *     summary="Refresh JWT token",
+     *     tags={"Authentication"},
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful token refresh",
+     *
+     *         @OA\JsonContent(
+     *
+     *             @OA\Property(
+     *                 property="access_token",
+     *                 type="string",
+     *                 description="New JWT access token",
+     *                 example="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+     *             ),
+     *             @OA\Property(
+     *                 property="token_type",
+     *                 type="string",
+     *                 description="Token type",
+     *                 example="bearer"
+     *             ),
+     *             @OA\Property(
+     *                 property="expires_in",
+     *                 type="integer",
+     *                 description="Token expiration time in seconds",
+     *                 example=3600
+     *             ),
+     *         ),
+     *     ),
+     * )
      *
      * @return \Illuminate\Http\JsonResponse
      */
