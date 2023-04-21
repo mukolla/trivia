@@ -9,10 +9,10 @@ use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use Tymon\JWTAuth\Exceptions\UserNotDefinedException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-//use Tymon\JWTAuth\JWTAuth;
-
 class JwtAuthMiddleware
 {
+    public const COOKIE_JWT_TOKEN_NAME = 'jwt_token';
+
     /**
      * Handle an incoming request.
      *
@@ -21,7 +21,13 @@ class JwtAuthMiddleware
     public function handle($request, Closure $next)
     {
         try {
-            $user = JWTAuth::parseToken()->authenticate();
+            $jwtToken = request()->cookie(self::COOKIE_JWT_TOKEN_NAME);
+
+            if (! empty($jwtToken)) {
+                $user = JWTAuth::setToken($jwtToken)->authenticate();
+            } else {
+                $user = JWTAuth::parseToken()->authenticate();
+            }
         } catch (JWTException $e) {
             if ($e instanceof UserNotDefinedException) {
                 return response()->json(['error' => 'Unauthorized'], 401);

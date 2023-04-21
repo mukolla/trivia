@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Http\Middleware\JwtAuthMiddleware;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Log;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -16,7 +17,23 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login']]);
+        $this->middleware('auth:api', ['except' => ['login', 'webLogin']]);
+    }
+
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function getAuthToken()
+    {
+        $credentials = request(['email', 'password']);
+
+        if (! Auth::guard('api')->attempt($credentials)) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        $user = Auth::guard('api')->user();
+
+        return JWTAuth::fromUser($user);
     }
 
     /**
@@ -95,23 +112,87 @@ class AuthController extends Controller
      */
     public function login()
     {
-        $credentials = request(['email', 'password']);
-
-        if (! Auth::guard('api')->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
-
-        $user = Auth::guard('api')->user();
-        Log::debug('User authenticated:', ['id' => $user->id, 'email' => $user->email]);
-
-        $token = JWTAuth::fromUser($user);
-        Log::debug('JWT token generated:', ['token' => $token]);
-
         return response()->json([
-            'access_token' => $token,
+            'access_token' => $this->getAuthToken(),
             'token_type' => 'bearer',
             'expires_in' => JWTAuth::factory()->getTTL() * 60,
         ]);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/auth/web/login",
+     *     summary="User login",
+     *     tags={"Authentication"},
+     *
+     *     @OA\RequestBody(
+     *
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *
+     *             @OA\Schema(
+     *
+     *                 @OA\Property(
+     *                     property="email",
+     *                     type="string",
+     *                     description="User email",
+     *                     example="user@example.com"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="password",
+     *                     type="string",
+     *                     description="User password",
+     *                     example="password"
+     *                 ),
+     *             ),
+     *         ),
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful login",
+     *
+     *         @OA\JsonContent(
+     *
+     *             @OA\Property(
+     *                 property="token_type",
+     *                 type="string",
+     *                 description="Type of the token",
+     *                 example="bearer"
+     *             ),
+     *             @OA\Property(
+     *                 property="expires_in",
+     *                 type="integer",
+     *                 description="Token expiration time in seconds",
+     *                 example="3600"
+     *             ),
+     *         ),
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *
+     *         @OA\JsonContent(
+     *
+     *             @OA\Property(
+     *                 property="error",
+     *                 type="string",
+     *                 description="Error message",
+     *                 example="Unauthorized"
+     *             ),
+     *         ),
+     *     ),
+     * )
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function webLogin()
+    {
+        return response()->json([
+            'token_type' => 'bearer',
+            'expires_in' => JWTAuth::factory()->getTTL() * 60,
+        ])->cookie(JwtAuthMiddleware::COOKIE_JWT_TOKEN_NAME, $this->getAuthToken(), JWTAuth::factory()->getTTL());
     }
 
     /**
@@ -157,6 +238,14 @@ class AuthController extends Controller
         return response()->json(['message' => 'Successfully logged out']);
     }
 
+    public function webLogout()
+    {
+        JWTAuth::invalidate(JWTAuth::getToken());
+
+        return response()->json(['message' => 'Logged out successfully'])
+            ->withCookie(cookie()->forget(JwtAuthMiddleware::COOKIE_JWT_TOKEN_NAME));
+    }
+
     /**
      * Refresh a token.
      *
@@ -197,7 +286,18 @@ class AuthController extends Controller
      */
     public function refresh()
     {
-        return $this->respondWithToken(auth()->refresh());
+        $jwtToken = request()->cookie(JwtAuthMiddleware::COOKIE_JWT_TOKEN_NAME);
+        if (! empty($jwtToken)) {
+            $newToken = JWTAuth::refresh(JWTAuth::getToken());
+            Cookie::queue('jwt_token', $newToken, JWTAuth::factory()->getTTL());
+
+            return response()->json([
+                'token_type' => 'bearer',
+                'expires_in' => auth()->factory()->getTTL() * 60,
+            ]);
+        } else {
+            return $this->respondWithToken(auth()->refresh());
+        }
     }
 
     /**
