@@ -16,6 +16,17 @@ class PlayerController extends Controller
      *     summary="Get all players",
      *     description="Retrieve a list of all players",
      *     tags={"Players"},
+     *     security={{"BearerAuth": {}}},
+     *
+     *     @OA\Header(
+     *             header="Content-Type",
+     *             description="Content Type",
+     *
+     *             @OA\Schema(
+     *                 type="string",
+     *                 format="application/json"
+     *             )
+     *         ),
      *
      *     @OA\Response(
      *          response=200,
@@ -46,6 +57,7 @@ class PlayerController extends Controller
      *     description="Returns a single player by ID",
      *     operationId="getPlayerById",
      *     tags={"Players"},
+     *     security={{"BearerAuth": {}}},
      *
      *     @OA\Parameter(
      *         name="id",
@@ -90,6 +102,7 @@ class PlayerController extends Controller
      *     summary="Create a new player",
      *     description="Create a new player with name, answers, and points",
      *     tags={"Players"},
+     *     security={{"BearerAuth": {}}},
      *
      *     @OA\RequestBody(
      *         required=true,
@@ -172,6 +185,7 @@ class PlayerController extends Controller
      *     description="Submit a player's answer and calculate the points earned based on whether it was correct or not.",
      *     operationId="answer",
      *     tags={"Players"},
+     *     security={{"BearerAuth": {}}},
      *
      *     @OA\Parameter(
      *         name="id",
@@ -257,6 +271,7 @@ class PlayerController extends Controller
      *     description="Delete a player record by its ID",
      *     operationId="deletePlayerById",
      *     tags={"Players"},
+     *     security={{"BearerAuth": {}}},
      *
      *     @OA\Parameter(
      *         name="id",
@@ -305,6 +320,7 @@ class PlayerController extends Controller
      *     description="Reset the number of answers of a player to 0",
      *     operationId="resetAnswers",
      *     tags={"Players"},
+     *     security={{"BearerAuth": {}}},
      *
      *     @OA\Parameter(
      *         name="id",

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Middleware\JwtAuthMiddleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
-use Illuminate\Support\Facades\Log;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
@@ -53,13 +52,13 @@ class AuthController extends Controller
      *                     property="email",
      *                     type="string",
      *                     description="User email",
-     *                     example="user@example.com"
+     *                     example="mukolla5@gmail.com"
      *                 ),
      *                 @OA\Property(
      *                     property="password",
      *                     type="string",
      *                     description="User password",
-     *                     example="password"
+     *                     example="123456dummy"
      *                 ),
      *             ),
      *         ),
@@ -196,7 +195,57 @@ class AuthController extends Controller
     }
 
     /**
-     * Get the authenticated User.
+     * Get the authenticated user's details.
+     *
+     * @OA\Post(
+     *     path="/api/auth/me",
+     *     summary="Get authenticated user details",
+     *     tags={"Authentication"},
+     *     security={{"bearerAuth":{}}},
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="OK",
+     *
+     *         @OA\JsonContent(
+     *
+     *             @OA\Property(property="id", type="integer", description="ID of the registered user"),
+     *             @OA\Property(property="name", type="string", description="Name of the registered user"),
+     *             @OA\Property(property="email", type="string", format="email", description="Email of the registered user"),
+     *             @OA\Property(property="message", type="string", description="Success message"),
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *
+     *         @OA\JsonContent(
+     *             type="object",
+     *
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Unauthenticated"
+     *             )
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error",
+     *
+     *         @OA\JsonContent(
+     *             type="object",
+     *
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Internal Server Error"
+     *             )
+     *         )
+     *     )
+     * )
      *
      * @return \Illuminate\Http\JsonResponse
      */
@@ -212,6 +261,7 @@ class AuthController extends Controller
      *     path="/api/auth/logout",
      *     summary="User logout",
      *     tags={"Authentication"},
+     *     security={{"BearerAuth": {}}},
      *
      *     @OA\Response(
      *         response=200,
@@ -233,17 +283,18 @@ class AuthController extends Controller
      */
     public function logout()
     {
-        auth()->logout();
+        $jwtToken = request()->cookie(JwtAuthMiddleware::COOKIE_JWT_TOKEN_NAME);
 
-        return response()->json(['message' => 'Successfully logged out']);
-    }
+        if (! empty($jwtToken)) {
+            JWTAuth::invalidate(JWTAuth::getToken());
 
-    public function webLogout()
-    {
-        JWTAuth::invalidate(JWTAuth::getToken());
+            return response()->json(['message' => 'Logged out successfully'])
+                ->withCookie(cookie()->forget(JwtAuthMiddleware::COOKIE_JWT_TOKEN_NAME));
+        } else {
+            auth()->logout();
 
-        return response()->json(['message' => 'Logged out successfully'])
-            ->withCookie(cookie()->forget(JwtAuthMiddleware::COOKIE_JWT_TOKEN_NAME));
+            return response()->json(['message' => 'Successfully logged out']);
+        }
     }
 
     /**
@@ -253,6 +304,7 @@ class AuthController extends Controller
      *     path="/api/auth/refresh",
      *     summary="Refresh JWT token",
      *     tags={"Authentication"},
+     *     security={{"BearerAuth": {}}},
      *
      *     @OA\Response(
      *         response=200,
@@ -294,7 +346,7 @@ class AuthController extends Controller
             return response()->json([
                 'token_type' => 'bearer',
                 'expires_in' => auth()->factory()->getTTL() * 60,
-            ]);
+            ])->cookie(JwtAuthMiddleware::COOKIE_JWT_TOKEN_NAME, $newToken, JWTAuth::factory()->getTTL());
         } else {
             return $this->respondWithToken(auth()->refresh());
         }

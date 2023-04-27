@@ -153,6 +153,11 @@ return [
         */
         'securityDefinitions' => [
             'securitySchemes' => [
+                'BearerAuth' => [
+                    'type' => 'http',
+                    'scheme' => 'bearer',
+                    'bearerFormat' => 'JWT',
+                ],
                 /*
                  * Examples of Security schemes
                 */
@@ -200,6 +205,7 @@ return [
                 */
             ],
             'security' => [
+                'BearerAuth' => [],
                 /*
                  * Examples of Securities
                 */
