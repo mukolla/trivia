@@ -139,8 +139,8 @@ class PlayerController extends Controller
      *         @OA\JsonContent(
      *
      *             @OA\Property(property="data", type="object", properties={
-     *             @OA\Property(property="player", ref="#/components/schemas/Player")
-     *         })
+     *                  @OA\Property(property="player", ref="#/components/schemas/Player")
+     *            })
      *        ),
      *     ),
      *

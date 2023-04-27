@@ -15,7 +15,7 @@
                     "Authentication"
                 ],
                 "summary": "User login",
-                "operationId": "8dcb70df1020986038d098cc08d05dae",
+                "operationId": "userLogin",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -91,7 +91,7 @@
                     "Authentication"
                 ],
                 "summary": "User login",
-                "operationId": "c671516d0fceddc3bd016751e4687cfb",
+                "operationId": "userWeblogin",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -163,7 +163,7 @@
                 ],
                 "summary": "Get authenticated user details",
                 "description": "Get the authenticated user's details.",
-                "operationId": "f0b15943f55143d36f606a2dbd1d2366",
+                "operationId": "authMe",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -241,7 +241,7 @@
                 ],
                 "summary": "User logout",
                 "description": "Log the user out (Invalidate the token).",
-                "operationId": "69281b12abb272c76871f19cb17ca563",
+                "operationId": "userLogout",
                 "responses": {
                     "200": {
                         "description": "Successful logout",
@@ -275,7 +275,7 @@
                 ],
                 "summary": "Refresh JWT token",
                 "description": "Refresh a token.",
-                "operationId": "b2eae7a8032954d25b46c7ec6f489c68",
+                "operationId": "userRefresh",
                 "responses": {
                     "200": {
                         "description": "Successful token refresh",

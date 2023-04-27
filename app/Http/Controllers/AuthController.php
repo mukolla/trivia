@@ -40,6 +40,7 @@ class AuthController extends Controller
      *     path="/api/auth/login",
      *     summary="User login",
      *     tags={"Authentication"},
+     *     operationId="userLogin",
      *
      *     @OA\RequestBody(
      *
@@ -123,6 +124,7 @@ class AuthController extends Controller
      *     path="/api/auth/web/login",
      *     summary="User login",
      *     tags={"Authentication"},
+     *     operationId="userWeblogin",
      *
      *     @OA\RequestBody(
      *
@@ -202,6 +204,7 @@ class AuthController extends Controller
      *     summary="Get authenticated user details",
      *     tags={"Authentication"},
      *     security={{"bearerAuth":{}}},
+     *     operationId="authMe",
      *
      *     @OA\Response(
      *         response=200,
@@ -262,6 +265,7 @@ class AuthController extends Controller
      *     summary="User logout",
      *     tags={"Authentication"},
      *     security={{"BearerAuth": {}}},
+     *     operationId="userLogout",
      *
      *     @OA\Response(
      *         response=200,
@@ -305,6 +309,7 @@ class AuthController extends Controller
      *     summary="Refresh JWT token",
      *     tags={"Authentication"},
      *     security={{"BearerAuth": {}}},
+     *     operationId="userRefresh",
      *
      *     @OA\Response(
      *         response=200,
